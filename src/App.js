@@ -6,71 +6,65 @@ import "./App.css";
 function  App() {   
   
    const [state,setstate]=useState([]);
-   const [dhoni,setdhoni]=useState([]);
+   const [choice,setchoice]=useState("All");
+   const select=["Completed","In Progress","All"];   
 
   useEffect(()=>{
     getDatas();
   },[])
      
-    const getDatas=async()=>{
-    const responce=await fetch("http://timeapi.kaaylabs.com/api/v1/project_view/");
-    const values=await responce.json();
+  const getDatas=async()=>
+  {
+  const responce=await fetch("http://timeapi.kaaylabs.com/api/v1/project_view/");
+  const values=await responce.json();
 
-    setstate(values.data);
+  setstate(values.data);
 
-    console.log(values);
-
-    
-
+  console.log(values);
   }
-  const filter= e =>{
-    setdhoni(e.target.value);  
-    console.log(dhoni);
-}
+
+  const filter= e =>
+  {
+    setchoice(e.target.value);  
+    
+  }
    
     return(
-      <div className="App">
-        <br/>
-        <form>
-        
-        <select value={dhoni} onChange={filter}>
-          <option value="Completed">In Progress</option>
-          <option value="In Progress">Completed</option>
-        </select>
-        
-        </form>
-       <Table   responsive hover text="light center"  dark>
-       <tr>
-         <th>project_id</th>
-         <th>project_code</th>
-         <th>description</th>
-         <th>start_date</th>
-         <th>end_date</th>
-         <th>status</th>
-         <th>company_name</th>
-       </tr>
-       
-        {
-          
-        state.map((e)=> e.status==dhoni?" ":  (
+         <div className="App">
+            <br/>
+             <form>        
+                 <select value={choice} onChange={filter}>
+                      {select.map(s=>(
+                         <option value={s}>{s}</option>         
+                      ))}                   
+                 </select>        
+             </form>
+
+       <Table  responsive hover text="light"  dark>
+          <tr>
+             <th>project_id</th>
+             <th>project_code</th>
+             <th>description</th>
+             <th>start_date</th>
+             <th>end_date</th>
+             <th>status</th>
+             <th>company_name</th>
+          </tr>       
+        {          
+          state.map((e)=> ((e.status===choice) || (choice==="All"))? (
       
-   <tr>
-
-
-    <td>{e.project_id}</td>
-    <td>{e.project_code}</td>
-    <td>{e.description}</td>
-    <td>{e.start_date}</td>
-    <td>{e.end_date}</td>
-    <td>{e.status}</td>
-    <td>{e.company_name}</td>
-    
-  
-  </tr>
-        
-          
-           
-        ))}
+            <tr>              
+               <td>{e.project_id}</td>
+               <td>{e.project_code}</td>
+               <td>{e.description}</td>
+               <td>{e.start_date}</td>
+               <td>{e.end_date}</td>
+               <td>{e.status}</td>
+               <td>{e.company_name}</td>  
+            </tr>      
+            
+             
+          ):"" )}
      </Table>
       </div>
     )
